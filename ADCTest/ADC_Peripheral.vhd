@@ -97,20 +97,15 @@ begin
                 last_channel_reg <= channel_reg;
             end if;
 
-            ----------------------------------------------------------------
-            -- handle writes to ADC_CTRL
+            -- Handle writes to ADC_CTRL
             --
-            -- proposed bit mapping:
-            -- io_data(2 downto 0) = channel
+            -- Register bit mapping:
+            -- io_data(4 downto 2) = channel
             -- io_data(1)          = clear_ready
             -- io_data(0)          = start
-            --
-            -- NOTE: this overlaps bit 1 and bit 0 with channel bits if you
-            -- really use bits 2:0 for channel. So you should probably revise
-            -- the final map. For now, this is just starter structure.
             ----------------------------------------------------------------
             if io_write = '1' and io_addr = ADDR_ADC_CTRL then
-                channel_reg <= io_data(4 downto 2);  -- safer choice
+                channel_reg <= io_data(4 downto 2);
 
                 if io_data(1) = '1' then
                     ready_reg <= '0';
