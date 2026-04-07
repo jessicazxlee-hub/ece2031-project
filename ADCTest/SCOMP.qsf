@@ -158,20 +158,8 @@ set_location_assignment PIN_AG2 -to HEADER[11]
 set_location_assignment PIN_AG3 -to HEADER[12]
 
 set_global_assignment -name ADVANCED_PHYSICAL_OPTIMIZATION OFF
-set_global_assignment -name VHDL_FILE HEX_DISP.vhd
-set_global_assignment -name VHDL_FILE DIG_OUT.vhd
-set_global_assignment -name VHDL_FILE DIG_IN.vhd
-set_global_assignment -name VHDL_FILE clk_div.vhd
-set_global_assignment -name VHDL_FILE TIMER.vhd
-set_global_assignment -name VHDL_FILE SCOMP.vhd
-set_global_assignment -name BDF_FILE SCOMP_System.bdf
-set_global_assignment -name BDF_FILE HEX_DISP_6.bdf
-set_global_assignment -name QIP_FILE PLL_main.qip
-set_global_assignment -name SIP_FILE PLL_main.sip
-set_global_assignment -name VHDL_FILE LTC2308_ctrl.vhd
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_location_assignment PIN_AA15 -to KEY3
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
@@ -291,5 +279,18 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_global_assignment -name VHDL_FILE ADC_Peripheral.vhd
+set_global_assignment -name VHDL_FILE HEX_DISP.vhd
+set_global_assignment -name VHDL_FILE DIG_OUT.vhd
+set_global_assignment -name VHDL_FILE DIG_IN.vhd
+set_global_assignment -name VHDL_FILE clk_div.vhd
+set_global_assignment -name VHDL_FILE TIMER.vhd
+set_global_assignment -name VHDL_FILE SCOMP.vhd
+set_global_assignment -name BDF_FILE SCOMP_System.bdf
+set_global_assignment -name BDF_FILE HEX_DISP_6.bdf
+set_global_assignment -name QIP_FILE PLL_main.qip
+set_global_assignment -name SIP_FILE PLL_main.sip
+set_global_assignment -name VHDL_FILE LTC2308_ctrl.vhd
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
