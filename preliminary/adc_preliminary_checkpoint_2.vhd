@@ -149,8 +149,8 @@ begin
             -- bit11:0 = SAMPLE
             read_data <= (15 downto 12 => '0') & data_reg;
         elsif rd_chan_sel = '1' then
-            -- bits 4:2 = CHANNEL
-            read_data <= (15 downto 5 => '0') & channel_reg & "00";
+            -- bits 2:0 = CHANNEL
+            read_data <= (15 downto 3 => '0') & channel_reg;
         end if;
     end process;
 
@@ -187,7 +187,7 @@ begin
             end if;
 
             if wr_chan_sel = '1' then
-                channel_reg <= IO_DATA(4 downto 2);
+                channel_reg <= IO_DATA(2 downto 0);
             end if;
         end if;
     end process;
