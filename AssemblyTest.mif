@@ -12,20 +12,14 @@ CONTENT BEGIN
 0004: 1801; --         LOADI   1
 0005: 98C0; --         OUT     ADC_CTRL         ; START conversion
 0006: 90C1; --         IN      ADC_STATUS
-0007: 3813; --         AND     ONE              ; isolate READY bit
+0007: 380E; --         AND     ONE              ; isolate READY bit
 0008: 7006; --         JZERO   WaitReady
 0009: 90C2; --         IN      ADC_DATA
-000A: 1015; --         STORE   SAMPLE
-000B: 0815; --         LOAD    SAMPLE
-000C: 3814; --         AND     MASK_LOW_NIBBLE
-000D: 9804; --         OUT     Hex0
-000E: 0815; --         LOAD    SAMPLE
-000F: 5014; --         SHIFT   -4               ; move bits 7:4 down to 3:0
-0010: 3814; --         AND     MASK_LOW_NIBBLE
-0011: 9805; --         OUT     Hex1
-0012: 5802; --         JUMP    MainLoop
-0013: 0001; -- ONE:                DW      &H0001
-0014: 000F; -- MASK_LOW_NIBBLE:    DW      &H000F
-0015: 0000; -- SAMPLE:             DW      &H0000
-[0016..07FF] : 0000; -- [empty memory]
+000A: 100F; --         STORE   SAMPLE
+000B: 080F; --         LOAD    SAMPLE
+000C: 9804; --         OUT     Hex0
+000D: 5802; --         JUMP    MainLoop
+000E: 0001; -- ONE:                DW      &H0001
+000F: 0000; -- SAMPLE:             DW      &H0000
+[0010..07FF] : 0000; -- [empty memory]
 END;
