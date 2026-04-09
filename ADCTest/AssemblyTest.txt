@@ -1,0 +1,58 @@
+        ORG     &H000
+
+; ---------------------------------------------------------
+; ADC to HEX display test
+; Shows lower 8 bits of ADC value:
+;   Hex1 = bits 7:4
+;   Hex0 = bits 3:0
+; ---------------------------------------------------------
+
+Start:
+      LOADI   0
+        OUT     ADC_CHANNEL      ; select ADC channel 0
+
+MainLoop:
+        LOADI   2
+        OUT     ADC_CTRL         ; CLEAR_READY
+
+        LOADI   1
+        OUT     ADC_CTRL         ; START conversion
+
+WaitReady:
+        IN      ADC_STATUS
+        AND     ONE              ; isolate READY bit
+        JZERO   WaitReady
+
+        IN      ADC_DATA  ; 12 bits 
+        STORE   SAMPLE
+
+; ---- output low nibble to Hex0 ----
+        LOAD    SAMPLE
+		AND     NUM
+        OUT     Hex0  ; 4 bits
+
+        JUMP    MainLoop
+
+; ---------------------------------------------------------
+; Constants / Variables
+; ---------------------------------------------------------
+ONE:                DW      &H0001
+NUM:				DW      &H0FFF
+SAMPLE:             DW      &H0000
+
+; ---------------------------------------------------------
+; ADC Peripheral addresses
+; ---------------------------------------------------------
+ADC_CTRL:           EQU     &HC0
+ADC_STATUS:         EQU     &HC1
+ADC_DATA:           EQU     &HC2
+ADC_CHANNEL:        EQU     &HC3
+
+; ---------------------------------------------------------
+; I/O address constants
+; ---------------------------------------------------------
+Switches:           EQU     &H000
+LEDs:               EQU     &H001
+Timer:              EQU     &H002
+Hex0:               EQU     &H004
+Hex1:               EQU     &H005

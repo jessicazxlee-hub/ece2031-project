@@ -31,10 +31,10 @@ architecture rtl of ADC_PERIPHERAL is
     --------------------------------------------------------------------
     -- Register map
     --------------------------------------------------------------------
-    constant ADC_CTRL_ADDR    : integer := 16#0C0#; -- &HC0
-    constant ADC_STATUS_ADDR  : integer := 16#0C1#; -- &HC1
-    constant ADC_DATA_ADDR    : integer := 16#0C2#; -- &HC2
-    constant ADC_CHANNEL_ADDR : integer := 16#0C3#; -- &HC3
+    constant ADC_CTRL_ADDR    : integer := 16#0C0#; -- 0xC0
+    constant ADC_STATUS_ADDR  : integer := 16#0C1#; -- 0xC1
+    constant ADC_DATA_ADDR    : integer := 16#0C2#; -- 0xC2
+    constant ADC_CHANNEL_ADDR : integer := 16#0C3#; -- 0xC3
 
     --------------------------------------------------------------------
     -- State machine
@@ -55,7 +55,6 @@ architecture rtl of ADC_PERIPHERAL is
     --------------------------------------------------------------------
     signal start_req       : std_logic := '0';
     signal clear_ready_req : std_logic := '0';
-    signal primed_reg      : std_logic := '0';
 
     --------------------------------------------------------------------
     -- Address decode
@@ -145,12 +144,14 @@ begin
         if rd_status_sel = '1' then
             -- bit0 = READY, bit1 = BUSY
             read_data <= (15 downto 2 => '0') & busy_reg & ready_reg;
+
         elsif rd_data_sel = '1' then
-            -- bit11:0 = SAMPLE
+            -- bit11:0 = SAMPLE (zero-extended to 16 bits)
             read_data <= (15 downto 12 => '0') & data_reg;
+
         elsif rd_chan_sel = '1' then
-            -- bits 4:2 = CHANNEL
-            read_data <= (15 downto 5 => '0') & channel_reg & "00";
+            -- bit2:0 = CHANNEL
+            read_data <= (15 downto 3 => '0') & channel_reg;
         end if;
     end process;
 
@@ -172,10 +173,14 @@ begin
         elsif rising_edge(CLOCK) then
             clear_ready_req <= '0';
 
+            -- Once the request has been accepted, clear the start request
             if state = CONV_HIGH then
                 start_req <= '0';
             end if;
 
+            -- ADC_CTRL write
+            -- bit0 = START
+            -- bit1 = CLEAR_READY
             if wr_ctrl_sel = '1' then
                 if IO_DATA(0) = '1' then
                     start_req <= '1';
@@ -186,8 +191,10 @@ begin
                 end if;
             end if;
 
+            -- ADC_CHANNEL write
+            -- bit2:0 = channel number
             if wr_chan_sel = '1' then
-                channel_reg <= IO_DATA(4 downto 2);
+                channel_reg <= IO_DATA(2 downto 0);
             end if;
         end if;
     end process;
@@ -266,10 +273,8 @@ begin
                     convst_reg <= '0';
 
                     if acq_hold_cnt = 0 then
-                        if primed_reg = '1' then
-                            ready_reg <= '1';
-                        end if;
-                        state <= DONE;
+                        ready_reg <= '1';
+                        state     <= DONE;
                     else
                         acq_hold_cnt <= acq_hold_cnt - 1;
                     end if;
@@ -312,11 +317,10 @@ begin
     process(CLOCK, RESETN)
     begin
         if RESETN = '0' then
-            tx_reg     <= (others => '0');
-            rx_reg     <= (others => '0');
-            data_reg   <= (others => '0');
-            sdi_reg    <= '0';
-            primed_reg <= '0';
+            tx_reg   <= (others => '0');
+            rx_reg   <= (others => '0');
+            data_reg <= (others => '0');
+            sdi_reg  <= '0';
 
         elsif rising_edge(CLOCK) then
             case state is
@@ -339,9 +343,6 @@ begin
 
                 when ACQ_HOLD =>
                     data_reg <= rx_reg;
-                    if primed_reg = '0' then
-                        primed_reg <= '1';
-                    end if;
 
                 when others =>
                     null;

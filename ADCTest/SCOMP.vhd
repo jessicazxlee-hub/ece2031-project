@@ -65,7 +65,7 @@ begin
 		numwords_a => 2048,
 		widthad_a => 11,
 		width_a => 16,
-		init_file => "project.mif",
+		init_file => "AssemblyTest.mif",
 		clock_enable_output_a => "BYPASS",
 		lpm_hint => "ENABLE_RUNTIME_MOD=NO",
 		intended_device_family => "CYCLONE V",
